@@ -1,18 +1,31 @@
-from google import genai
-from dotenv import load_dotenv
 import os
+from google import genai
+from google.genai import types
+from dotenv import load_dotenv
 
 load_dotenv()
 
+
 def main():
-    client = genai.Client(api_key=os.getenv("GENAI_API_KEY"))
+    try:
+        client = genai.Client(api_key=os.getenv("GENAI_API_KEY"))
 
-    response = client.models.generate_content(
-    model="gemini-2.0-flash",
-    contents="Explain how AI works",
-    )
+        response = client.models.generate_content_stream(
+            model="gemini-2.0-flash",
+            config=types.GenerateContentConfig(
+                # System instruction to set the context for the model.
+                system_instruction="You are a financial advisor.",
+            ),
+            # Prompt for the model to generate content for.
+            contents="Explain how to create a portfolio.",
+        )
 
-    print(response.text)
+        # Print the response as it is received in chunks.
+        for chunk in response:
+            print(chunk.text, end="")
+    except Exception as e:
+        print(f"Error: {e}")
+
 
 if __name__ == "__main__":
     main()
