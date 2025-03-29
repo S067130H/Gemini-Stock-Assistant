@@ -48,7 +48,7 @@ The app:
 1. Clone the project
 ```bash
 git clone https://github.com/S067130H/Gemini-Stock-Assistant.git
-cd gemini-stock-assistant
+cd Gemini-Stock-Assistant
 ```
 
 2. Create a virtual environment
