@@ -9,9 +9,12 @@ load_dotenv()
 
 def main():
     try:
-        # Initialize the AlphaVantage client
+        # Verify that the GENAI API key is set
+        if not os.getenv("GENAI_API_KEY"):
+            raise ValueError("GENAI_API_KEY is required.")
+
+        # Initialize the clients
         avc = AlphaVantageClient()
-        
         client = genai.Client(api_key=os.getenv("GENAI_API_KEY"))
 
         response = client.models.generate_content_stream(
