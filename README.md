@@ -61,16 +61,6 @@ source venv/bin/activate  # On Windows: venv\Scripts\activate
 ```bash
 pip install -r requirements.txt
 ```
-2. Create a virtual environment
-```bash
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-```
-
-3. Install dependencies
-```bash
-pip install -r requirements.txt
-```
 
 4. Add a `.env` file with your keys:
 ```
