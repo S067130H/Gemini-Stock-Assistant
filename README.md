@@ -1,85 +1,105 @@
-# Gemini Stock Assistant
+# 📈 Gemini Stock Assistant
 
-Gemini Stock Assistant is a Python-based application that leverages Google's Gemini API to provide real-time financial insights. It supports advanced tool-calling capabilities to trigger custom functions, such as retrieving news sentiment data via the Alpha Vantage API. The project is modular, scalable, and designed to streamline financial analysis.
+Gemini Stock Assistant is an AI-powered CLI application that uses Google Gemini + Alpha Vantage to generate market insights based on real-time news sentiment.
 
-## Features
+Ask natural questions like:
 
-- **Google Gemini API Integration**: Provides financial insights and supports both streaming and non-streaming responses.
-- **Tool Calling**: Uses `FunctionDeclaration` to trigger custom tools like `get_news_sentiment`.
-- **Real-Time News Sentiment**: Retrieves sentiment data for stock tickers or topics using the Alpha Vantage API.
-- **Modular Design**: Includes `GenAIClient` for Gemini API interactions and `AlphaVantageClient` for Alpha Vantage API calls.
-- **Dynamic Function Routing**: Routes function calls from Gemini to actual implementations and processes JSON results.
+> _"What’s the latest news sentiment for AAPL and MSFT?"_
 
-## Installation
+The app:
+- Uses **Gemini’s function calling** to detect that you want news sentiment
+- Calls **Alpha Vantage’s `NEWS_SENTIMENT` API**
+- **Summarizes** the result using Gemini
+- Caches the results for fast reuse
 
-1. Clone the repository:
-    ```bash
-    git clone https://github.com/S067130H/gemini-stock-assistant.git
-    cd gemini-stock-assistant
-    ```
+---
 
-2. Create a virtual environment and install dependencies:
-    ```bash
-    python -m venv venv
-    source venv/bin/activate  # On Windows: venv\Scripts\activate
-    pip install -r requirements.txt
-    ```
+## 🚀 Features
 
-3. Set up environment variables (see below).
+- 🤖 **AI-Driven Insight** – Uses Gemini 2.0 to summarize and analyze news data
+- 🔍 **Real-Time News Sentiment** – Pulls structured sentiment data from Alpha Vantage
+- 🧠 **Function Calling** – Gemini auto-triggers a tool to get the data it needs
+- ⚡ **Streaming Output** – Live token-by-token output for faster feedback
+- 🗂️ **Caching** – API results are cached to avoid duplicate calls and improve speed
 
-## Environment Variable Setup
+---
 
-Create a `.env` file in the project root with the following keys:
+## 🧱 Architecture
 
-```env
-GENAI_API_KEY=your_google_genai_api_key
-ALPHA_VANTAGE_API_KEY=your_alpha_vantage_api_key
+| Component | Description |
+|----------|-------------|
+| `main.py` | CLI entry point — handles prompt input, function routing, summarization |
+| `genai_api.py` | Gemini client with support for generation, streaming, and summarization |
+| `alpha_vantage_api.py` | Fetches and caches Alpha Vantage news sentiment data |
+| `tools.py` | Defines Gemini function tools like `get_news_sentiment()` |
+
+---
+
+## 🧪 Example Prompts
+
+- `What’s the latest sentiment around Apple and Microsoft?`
+- `Summarize the tech and AI sectors this week.`
+- `What are people saying about Tesla and Nvidia?`
+
+---
+
+## 🛠️ Installation
+
+1. Clone the project
+```bash
+git clone https://github.com/S067130H/gemini-stock-assistant.git
+cd gemini-stock-assistant
 ```
 
-Replace `your_google_genai_api_key` and `your_alpha_vantage_api_key` with your actual API keys.
-
-## Usage
-
-1. Run the application:
-    ```bash
-    python main.py
-    ```
-
-2. Enter a prompt when prompted. For example:
-    ```
-    Enter a prompt for news sentiment analysis: Summarize tech market sentiment for AAPL and MSFT
-    ```
-
-3. The application will:
-    - Use the Gemini API to process the prompt.
-    - Trigger the `get_news_sentiment` tool if required.
-    - Fetch real-time sentiment data from the Alpha Vantage API.
-    - Summarize the results and display them.
-
-### Example Workflow
-
-**Input Prompt**:  
-`Summarize tech market sentiment for AAPL and MSFT`
-
-**Function Call**:  
-`get_news_sentiment` is triggered with `tickers=["AAPL", "MSFT"]`.
-
-**Response**:  
-```
-News Sentiment: {"AAPL": "Positive", "MSFT": "Neutral"}
+2. Create a virtual environment
+```bash
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
 ```
 
-## Future Features
+3. Install dependencies
+```bash
+pip install -r requirements.txt
+```
 
-- **Enhanced Tooling**: Add more tools for financial analysis, such as stock price predictions or portfolio optimization.
-- **Web Interface**: Build a web-based dashboard for easier interaction.
-- **Data Visualization**: Integrate charts and graphs for better insights.
-- **Multi-Language Support**: Expand support for non-English financial news.
+4. Add a `.env` file with your keys:
+```
+GENAI_API_KEY=your_google_genai_key
+ALPHA_VANTAGE_API_KEY=your_alpha_vantage_key
+```
 
-## License
+---
 
-This project is licensed under the [MIT License](LICENSE).
+## 🧠 How It Works (Behind the Scenes)
 
-## Contributing
+1. You enter a natural prompt.
+2. Gemini tries to complete the response — and if needed, **calls a registered tool**.
+3. The `get_news_sentiment` tool hits Alpha Vantage and returns structured news data.
+4. Gemini **summarizes** this data using a financial analyst persona.
+5. The result is **streamed token-by-token** to your console.
 
-Contributions are welcome! Please open an issue or submit a pull request for any improvements or bug fixes.
+Cached results are stored in `/cache` using a hash of the tickers/topics.
+
+---
+
+## 📁 Example Cache Files
+
+```
+cache/
+├── 0ee7055184601ceace9296c8ffe52695.json  # Cached result for AAPL + MSFT
+├── 813b48dbce92baecd34d4fddd07e27ff.json  # Cached result for tech + AI
+```
+
+---
+
+## 💡 Future Ideas
+
+- Visualize sentiment data with charts
+- Export summaries to markdown or JSON
+- Add more tools (price history, portfolio generation)
+
+---
+
+## 📜 License
+
+MIT [License](LICENSE)
