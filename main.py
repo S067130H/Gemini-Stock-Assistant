@@ -13,6 +13,9 @@ from tools import get_news_sentiment
 load_dotenv()
 
 
+cache_dir = os.path.join(os.path.dirname(__file__), "cache")
+
+
 def main():
     """
     Main function to run the sentiment analysis.
@@ -40,12 +43,33 @@ def main():
             if chunk.candidates[0].content.parts[0].function_call:
                 function_call = chunk.candidates[0].content.parts[0].function_call
                 if function_call.name == "get_news_sentiment":
-                    # Extract arguments and call AlphaVantageClient
+                    # Extract arguments from the function call
                     args = function_call.args
                     tickers = args.get("tickers", [])
                     topics = args.get("topics", [])
-                    sentiment = avc.get_news_sentiment(tickers=tickers, topics=topics)
-                    print(f"News Sentiment: {sentiment}")
+
+                    # Attempt to load data from cache
+                    cached_data = avc.load_from_cache(tickers, topics, cache_dir)
+                    if cached_data:
+                        for chunk in gemini.summarize_sentiment(
+                            contents=cached_data,
+                            tools=[get_news_sentiment],
+                        ):
+                            print(chunk.text, end="")
+                    else:
+                        # Fetch data from the API
+                        sentiment = avc.get_news_sentiment(
+                            tickers=tickers, topics=topics
+                        )
+
+                        # Cache the response
+                        avc.cache_response(tickers, topics, sentiment, cache_dir)
+
+                        for chunk in gemini.summarize_sentiment(
+                            contents=sentiment,
+                            tools=[get_news_sentiment],
+                        ):
+                            print(chunk.text, end="")
             else:
                 print(chunk.text, end="")
     except Exception as e:

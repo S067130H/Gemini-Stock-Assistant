@@ -4,6 +4,9 @@ It allows for retrieving news sentiment based on provided tickers or topics.
 """
 
 import os
+import json
+import time
+import hashlib
 import requests
 
 
@@ -41,3 +44,44 @@ class AlphaVantageClient:
         response = requests.get(url, params=params, timeout=10)
         response.raise_for_status()
         return response.json()
+
+    def cache_response(
+        self, tickers: list[str], topics: list[str], response: dict, cache_dir: str
+    ) -> None:
+        """
+        Cache the response to a file in the specified directory.
+        """
+        os.makedirs(cache_dir, exist_ok=True)
+        cache_key = self._generate_cache_key(tickers, topics)
+        cache_path = os.path.join(cache_dir, f"{cache_key}.json")
+
+        with open(cache_path, "w") as f:
+            json.dump(response, f)
+
+    def _generate_cache_key(self, tickers: list[str], topics: list[str]) -> str:
+        """
+        Generate a unique cache key based on the tickers and topics.
+        """
+        data = json.dumps(
+            {"tickers": sorted(tickers or []), "topics": sorted(topics or [])},
+            sort_keys=True,
+        )
+        return hashlib.md5(data.encode("utf-8")).hexdigest()
+
+    def load_from_cache(
+        self, tickers: list[str], topics: list[str], cache_dir: str, max_age: int = 3600
+    ) -> dict | None:
+        """
+        Load the cached response from a file in the specified directory.
+        """
+        cache_key = self._generate_cache_key(tickers, topics)
+        cache_path = os.path.join(cache_dir, f"{cache_key}.json")
+
+        if os.path.exists(cache_path):
+            age = time.time() - os.path.getmtime(cache_path)
+            if age < max_age:
+                with open(cache_path, "r") as f:
+                    return json.load(f)
+            else:
+                os.remove(cache_path)
+        return None

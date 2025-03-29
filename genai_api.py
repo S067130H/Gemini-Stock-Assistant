@@ -4,6 +4,7 @@ It allows for generating content and streaming responses using the specified mod
 """
 
 import os
+import json
 from typing import Optional
 from google import genai
 from google.genai import types
@@ -70,3 +71,30 @@ class GenAIClient:
         )
 
         return response
+
+    def summarize_sentiment(
+        self,
+        sentiment_data: dict,
+        max_items: int = 3,
+        tools: Optional[list[types.FunctionDeclaration]] = None,
+    ):
+        """
+        Summarize news sentiment data using the GenAI API.
+        """
+        articles = sentiment_data.get("feed", [])[:max_items]
+        prompt = f"""
+        You are a market analyst. Analyze and summarize the following news sentiment data.
+
+        Focus on:
+        - Overall market mood
+        - Bullish or bearish trends
+        - Notable companies mentioned
+        - Any sector-specific patterns
+
+        Return a concise plain-English summary.
+
+        News data:
+        {json.dumps(articles, indent=2)}
+        """
+
+        return self.get_response(contents=prompt, tools=tools)
