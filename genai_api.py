@@ -2,6 +2,7 @@ import os
 from typing import Optional
 from google import genai
 from google.genai import types
+from tools import bundle_tools
 
 
 class GenAIClient:
@@ -23,7 +24,7 @@ class GenAIClient:
     def _build_config(self, tools: Optional[list[types.FunctionDeclaration]] = None):
         return types.GenerateContentConfig(
             system_instruction=self.instructions,
-            tools=[types.Tool(function_declarations=tools)] if tools else None,
+            tools=bundle_tools(tools),
         )
 
     def get_response(
