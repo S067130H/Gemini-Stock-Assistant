@@ -5,6 +5,7 @@ If a function call is detected in the response, it retrieves the news sentiment 
 """
 
 import os
+import time
 from dotenv import load_dotenv
 from genai_api import GenAIClient
 from alpha_vantage_api import AlphaVantageClient
@@ -51,19 +52,28 @@ def main():
                     # Attempt to load data from cache
                     cached_data = avc.load_from_cache(tickers, topics, cache_dir)
                     if cached_data:
+                        print("Using cached data.")
+                        # Use the cached data for sentiment analysis
                         for chunk in gemini.summarize_sentiment(
                             contents=cached_data,
                             tools=[get_news_sentiment],
                         ):
                             print(chunk.text, end="")
                     else:
+                        print(f"Fetching data from API...", end="")
+                        start_time = time.time()
+
                         # Fetch data from the API
                         sentiment = avc.get_news_sentiment(
                             tickers=tickers, topics=topics
                         )
 
+                        elapsed_time = time.time() - start_time
+                        print(f" Done! (Time elapsed: {elapsed_time:.2f} seconds)")
+
                         # Cache the response
                         avc.cache_response(tickers, topics, sentiment, cache_dir)
+                        print("Data cached.")
 
                         for chunk in gemini.summarize_sentiment(
                             contents=sentiment,
