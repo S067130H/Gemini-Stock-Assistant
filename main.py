@@ -55,7 +55,7 @@ def main():
                         print("Using cached data.")
                         # Use the cached data for sentiment analysis
                         for chunk in gemini.summarize_sentiment(
-                            contents=cached_data,
+                            sentiment_data=cached_data,
                             tools=[get_news_sentiment],
                         ):
                             print(chunk.text, end="")
@@ -76,7 +76,7 @@ def main():
                         print("Data cached.")
 
                         for chunk in gemini.summarize_sentiment(
-                            contents=sentiment,
+                            sentiment_data=sentiment,
                             tools=[get_news_sentiment],
                         ):
                             print(chunk.text, end="")
