@@ -2,12 +2,16 @@ import os
 from google import genai
 from google.genai import types
 from dotenv import load_dotenv
+from alpha_vantage_api import AlphaVantageClient
 
 load_dotenv()
 
 
 def main():
     try:
+        # Initialize the AlphaVantage client
+        avc = AlphaVantageClient()
+        
         client = genai.Client(api_key=os.getenv("GENAI_API_KEY"))
 
         response = client.models.generate_content_stream(
