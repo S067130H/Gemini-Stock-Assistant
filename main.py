@@ -54,11 +54,13 @@ def main():
                     if cached_data:
                         print("Using cached data.")
                         # Use the cached data for sentiment analysis
-                        for chunk in gemini.summarize_sentiment(
+                        response = gemini.summarize_sentiment(
                             sentiment_data=cached_data,
                             tools=[get_news_sentiment],
-                        ):
-                            print(chunk.text, end="")
+                        )
+
+                        for text in gemini.stream_text_from_response(response):
+                            print(text, end="")
                     else:
                         print(f"Fetching data from API...", end="")
                         start_time = time.time()
@@ -75,11 +77,13 @@ def main():
                         avc.cache_response(tickers, topics, sentiment, cache_dir)
                         print("Data cached.")
 
-                        for chunk in gemini.summarize_sentiment(
+                        response = gemini.summarize_sentiment(
                             sentiment_data=sentiment,
                             tools=[get_news_sentiment],
-                        ):
-                            print(chunk.text, end="")
+                        )
+
+                        for text in gemini.stream_text_from_response(response):
+                            print(text, end="")
             else:
                 print(chunk.text, end="")
     except Exception as e:

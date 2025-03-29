@@ -98,3 +98,12 @@ class GenAIClient:
         """
 
         return self.get_response(contents=prompt, tools=tools)
+
+    def stream_text_from_response(self, response):
+        """
+        Stream text from the GenAI API response.
+        """
+        for candidate in response.candidates:
+            for part in candidate.content.parts:
+                if hasattr(part, "text"):
+                    yield part.text
