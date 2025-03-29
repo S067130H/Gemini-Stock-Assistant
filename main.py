@@ -37,10 +37,11 @@ def main():
 
         # Process the response and handle function calls
         for chunk in response:
-            if chunk.function_call:
-                if chunk.function_call.name == "get_news_sentiment":
+            if chunk.candidates[0].content.parts[0].function_call:
+                function_call = chunk.candidates[0].content.parts[0].function_call
+                if function_call.name == "get_news_sentiment":
                     # Extract arguments and call AlphaVantageClient
-                    args = chunk.function_call.arguments
+                    args = function_call.args
                     tickers = args.get("tickers", [])
                     topics = args.get("topics", [])
                     sentiment = avc.get_news_sentiment(tickers=tickers, topics=topics)

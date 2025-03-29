@@ -9,27 +9,22 @@ from google.genai import types
 
 get_news_sentiment = types.FunctionDeclaration(
     name="get_news_sentiment",
-    description="Get the latest news sentiment for a list of tickers or topics.",
+    description="Get the latest news sentiment for a list of stock tickers or topics.",
     parameters={
+        "type": "object",
         "properties": {
             "tickers": {
-                "description": "List of stock tickers to get news sentiment for.",
                 "type": "array",
-                "items": {
-                    "type": "string",
-                    "description": "A stock ticker symbol.",
-                },
+                "items": {"type": "string"},
+                "description": "A list of stock ticker symbols (e.g. AAPL, TSLA).",
             },
             "topics": {
-                "description": "List of topics to get news sentiment for.",
                 "type": "array",
-                "items": {
-                    "type": "string",
-                    "description": "A topic of interest.",
-                },
+                "items": {"type": "string"},
+                "description": "Optional topics to filter the news sentiment by.",
             },
         },
-        "required": [],  # Make both optional to match AlphaVantageClient logic
+        "required": [],  # None are required — matches your AlphaVantageClient logic
     },
 )
 
