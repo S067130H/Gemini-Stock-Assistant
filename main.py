@@ -2,6 +2,7 @@ import os
 from google import genai
 from google.genai import types
 from dotenv import load_dotenv
+from genai_api import GenAIClient
 from alpha_vantage_api import AlphaVantageClient
 
 load_dotenv()
@@ -14,17 +15,12 @@ def main():
             raise ValueError("GENAI_API_KEY is required.")
 
         # Initialize the clients
+        gemini = GenAIClient()
         avc = AlphaVantageClient()
-        client = genai.Client(api_key=os.getenv("GENAI_API_KEY"))
 
-        response = client.models.generate_content_stream(
-            model="gemini-2.0-flash",
-            config=types.GenerateContentConfig(
-                # System instruction to set the context for the model.
-                system_instruction="You are a financial advisor.",
-            ),
-            # Prompt for the model to generate content for.
-            contents="Explain how to create a portfolio.",
+        response = gemini.stream_response(
+            contents="Generate a summary of the latest news articles.",
+            # tools=[avc.get_news_sentiment],
         )
 
         # Print the response as it is received in chunks.
