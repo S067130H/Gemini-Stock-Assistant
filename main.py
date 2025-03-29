@@ -4,6 +4,7 @@ from google.genai import types
 from dotenv import load_dotenv
 from genai_api import GenAIClient
 from alpha_vantage_api import AlphaVantageClient
+from tools import get_news_sentiment
 
 load_dotenv()
 
@@ -18,14 +19,24 @@ def main():
         gemini = GenAIClient()
         avc = AlphaVantageClient()
 
+        # Generate a summary of the latest news articles
         response = gemini.stream_response(
             contents="Generate a summary of the latest news articles.",
-            # tools=[avc.get_news_sentiment],
+            tools=[get_news_sentiment],
         )
 
-        # Print the response as it is received in chunks.
+        # Process the response and handle function calls
         for chunk in response:
-            print(chunk.text, end="")
+            if chunk.function_call:
+                if chunk.function_call.name == "get_news_sentiment":
+                    # Extract arguments and call AlphaVantageClient
+                    args = chunk.function_call.arguments
+                    tickers = args.get("tickers", [])
+                    topics = args.get("topics", [])
+                    sentiment = avc.get_news_sentiment(tickers=tickers, topics=topics)
+                    print(f"News Sentiment: {sentiment}")
+            else:
+                print(chunk.text, end="")
     except Exception as e:
         print(f"Error: {e}")
 

@@ -25,7 +25,7 @@ get_news_sentiment = types.FunctionDeclaration(
                 ),
             ),
         },
-        required=["tickers", "topics"],
+        required=[],  # Make both optional to match AlphaVantageClient logic
     ),
 )
 

@@ -24,7 +24,7 @@ class GenAIClient:
     def _build_config(self, tools: Optional[list[types.FunctionDeclaration]] = None):
         return types.GenerateContentConfig(
             system_instruction=self.instructions,
-            tools=bundle_tools(tools),
+            tools=bundle_tools(tools),  # Ensure tools are wrapped correctly
         )
 
     def get_response(
