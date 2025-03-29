@@ -19,9 +19,12 @@ def main():
         gemini = GenAIClient()
         avc = AlphaVantageClient()
 
+        # Accept a user prompt for news sentiment analysis
+        user_prompt = input("Enter a prompt for news sentiment analysis: ")
+
         # Generate a summary of the latest news articles
         response = gemini.stream_response(
-            contents="Generate a summary of the latest news articles.",
+            contents=user_prompt,
             tools=[get_news_sentiment],
         )
 
