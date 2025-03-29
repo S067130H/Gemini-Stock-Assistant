@@ -120,47 +120,8 @@ pip install -r requirements.txt
 ```
 GENAI_API_KEY=your_google_genai_key
 ALPHA_VANTAGE_API_KEY=your_alpha_vantage_key
-4. Add a `.env` file with your keys:
-```
-GENAI_API_KEY=your_google_genai_key
-ALPHA_VANTAGE_API_KEY=your_alpha_vantage_key
 ```
 
----
-
-## 🧠 How It Works (Behind the Scenes)
-
-1. You enter a natural prompt.
-2. Gemini tries to complete the response — and if needed, **calls a registered tool**.
-3. The `get_news_sentiment` tool hits Alpha Vantage and returns structured news data.
-4. Gemini **summarizes** this data using a financial analyst persona.
-5. The result is **streamed token-by-token** to your console.
-
-Cached results are stored in `/cache` using a hash of the tickers/topics.
-
----
-
-## 📁 Example Cache Files
-
-```
-cache/
-├── 0ee7055184601ceace9296c8ffe52695.json  # Cached result for AAPL + MSFT
-├── 813b48dbce92baecd34d4fddd07e27ff.json  # Cached result for tech + AI
-```
-
----
-
-## 💡 Future Ideas
-
-- Visualize sentiment data with charts
-- Export summaries to markdown or JSON
-- Add more tools (price history, portfolio generation)
-
----
-
-## 📜 License
-
-MIT [License](LICENSE)
 ---
 
 ## 🧠 How It Works (Behind the Scenes)
