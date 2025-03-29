@@ -1,3 +1,8 @@
+"""
+This module provides a client for interacting with the Google GenAI API.
+It allows for generating content and streaming responses using the specified model and instructions.
+"""
+
 import os
 from typing import Optional
 from google import genai
@@ -6,6 +11,10 @@ from tools import bundle_tools
 
 
 class GenAIClient:
+    """
+    A client for interacting with the Google GenAI API.
+    """
+
     def __init__(
         self,
         api_key=None,
@@ -22,6 +31,9 @@ class GenAIClient:
         self.client = genai.Client(api_key=self.api_key)
 
     def _build_config(self, tools: Optional[list[types.FunctionDeclaration]] = None):
+        """
+        Build the configuration for the GenAI API request.
+        """
         return types.GenerateContentConfig(
             system_instruction=self.instructions,
             tools=bundle_tools(tools),  # Ensure tools are wrapped correctly
@@ -32,6 +44,9 @@ class GenAIClient:
         contents: str,
         tools: Optional[list[types.FunctionDeclaration]] = None,
     ):
+        """
+        Generate a response using the GenAI API.
+        """
         response = self.client.models.generate_content(
             model=self.model,
             config=self._build_config(tools),
@@ -45,6 +60,9 @@ class GenAIClient:
         contents: str,
         tools: Optional[list[types.FunctionDeclaration]] = None,
     ):
+        """
+        Stream a response using the GenAI API.
+        """
         response = self.client.models.generate_content_stream(
             model=self.model,
             config=self._build_config(tools),

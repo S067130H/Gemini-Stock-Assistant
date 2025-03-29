@@ -1,6 +1,10 @@
+"""
+This script is a simple command-line application that uses the Google GenAI API to analyze news sentiment based on user input.
+It initializes the GenAI and Alpha Vantage clients, accepts a user prompt, and generates a summary of the latest news articles.
+If a function call is detected in the response, it retrieves the news sentiment using the Alpha Vantage API and prints the result.
+"""
+
 import os
-from google import genai
-from google.genai import types
 from dotenv import load_dotenv
 from genai_api import GenAIClient
 from alpha_vantage_api import AlphaVantageClient
@@ -10,6 +14,9 @@ load_dotenv()
 
 
 def main():
+    """
+    Main function to run the sentiment analysis.
+    """
     try:
         # Verify that the GENAI API key is set
         if not os.getenv("GENAI_API_KEY"):
