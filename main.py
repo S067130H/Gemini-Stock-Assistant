@@ -60,7 +60,11 @@ def main():
                         )
 
                         for text in gemini.stream_text_from_response(response):
-                            print(text, end="")
+                            for char in text:
+                                print(char, end="")
+                                time.sleep(
+                                    0.01
+                                )  # Add a small delay for better readability
                     else:
                         print(f"Fetching data from API...", end="")
                         start_time = time.time()
@@ -83,7 +87,9 @@ def main():
                         )
 
                         for text in gemini.stream_text_from_response(response):
-                            print(text, end="")
+                            for char in text:
+                                print(char, end="")
+                                time.sleep(0.01)
             else:
                 print(chunk.text, end="")
     except Exception as e:
